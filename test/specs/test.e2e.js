@@ -35,8 +35,8 @@ describe('Demoqa Login Page', async () => {
 
     it('should register new customer', async () => {
         await browser.url('/register')
-        // const headline = $('.main-header')
-        // await expect (await headline.getText()).toEqual('Register');
+        const headline = $('h1')
+        await expect (await headline.getText()).toEqual('Register');
         const customerFirstNameField =  await $('input[id="firstname"]');
         await customerFirstNameField.setValue(customerFirstName);
         const customerLastNameField =  await $('input[id="lastname"]');
@@ -57,22 +57,23 @@ describe('Demoqa Login Page', async () => {
 
     it('should redirect to login', async () => {
         await browser.url('/register');
-        // const headline = $('.main-header');
-        // await expect (await headline.getText()).toEqual('Register');
+         const headline = $('h1');
+        await expect (await headline.getText()).toEqual('Register');
         const redirButton = $('#gotologin');
         await expect(redirButton).toBeClickable();
         await redirButton.click();
-        // await expect(await headline.getText()).toEqual('Login');
+        await expect(await headline.getText()).toEqual('Login');
     });
 
     it('should redirect to register', async () => {
         await browser.url('/login');
-        // const headline = $('.main-header');
-        // await expect (await headline.getText()).toEqual('Login');
+        const headline = $('h1');
+        await expect (await headline.getText()).toEqual('Login');
         const newUserButton = $('#newUser');
         await expect(newUserButton).toBeClickable();
         await newUserButton.click();
-        // await expect(await headline.getText()).toEqual('Register');
+        
+        await expect(await headline.getText()).toEqual('Register');
     });
 
 
@@ -80,8 +81,8 @@ describe('Demoqa Login Page', async () => {
         await browser.url('/login')
         await browser.saveScreenshot('login_page.png');
 
-        // const title = await $('h2');
-        // await expect (await title.getText()).toContain('Welcome,');
+        const title = await $('h1');
+        await expect (await title.getText()).toContain('Login');
         const customerUserNameField =  await $('input[id="userName"]');
 
         await customerUserNameField.setValue(customerUserName);
@@ -96,6 +97,7 @@ describe('Demoqa Login Page', async () => {
         await browser.pause(1000) //poor internet connection
         
         // succesfully logged user check
+        
         // await expect (await headline.getText()).toEqual('Profile');
 
         const currentLoggedUser = $('#userName-value')  ;
@@ -105,7 +107,9 @@ describe('Demoqa Login Page', async () => {
         const logoutButton = await $('#submit');
         await expect (logoutButton).toBeClickable();
         await logoutButton.click();
-        // await expect (await headline.getText()).toEqual('Login');
+
+            const headline = await $('h1');
+        await expect (await headline.getText()).toEqual('Login');
 
 
     });

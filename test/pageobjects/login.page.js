@@ -19,7 +19,8 @@ class LoginPage extends Page {
     get btnSubmit () {
         return $('button[type="submit"]');
     }
-
+    get title (){ 
+        return $('h1')};
     /**
      * a method to encapsule automation code to interact with the page
      * e.g. to login using username and password
