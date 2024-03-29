@@ -1,7 +1,7 @@
 import { expect } from '@wdio/globals'
 import LoginPage from '../pageobjects/login.page.js'
 import SecurePage from '../pageobjects/secure.page.js'
-import {customerFirstName, customerLastName, customerUserName, customerPassword, loggedUser} from '../../test/specs/fixtures.js'
+import {customerFirstName, customerLastName, customerUserName, customerPassword, loggedUser, wrongMessage} from '../../test/specs/fixtures.js'
 
 
 describe('Demoqa Login Page', async () => {
@@ -62,6 +62,7 @@ describe('Demoqa Login Page', async () => {
         const redirButton = $('#gotologin');
         await expect(redirButton).toBeClickable();
         await redirButton.click();
+        await browser.pause(1000) //poor internet connection
         await expect(await headline.getText()).toEqual('Login');
     });
 
@@ -72,10 +73,49 @@ describe('Demoqa Login Page', async () => {
         const newUserButton = $('#newUser');
         await expect(newUserButton).toBeClickable();
         await newUserButton.click();
-        
+        await browser.pause(1000) //poor internet connection
         await expect(await headline.getText()).toEqual('Register');
     });
 
+    it('should not login user with wrong password', async () => {
+        await browser.url('/login');
+        const headline = $('h1');
+        await expect (await headline.getText()).toEqual('Login');
+        const customerUserNameField = await $('input[id="userName"]');
+        await customerUserNameField.setValue(customerFirstName);
+
+        const customerPasswordField = await $('input[id ="password"]');
+        await customerPasswordField.setValue('123');
+
+        const loginButton = await $('#login');
+        await expect (loginButton).toBeClickable();
+        await loginButton.click(); 
+
+        await browser.pause(1000); //poor internet connection
+
+        const wrongCredentials = $('#name');
+        await expect (await wrongCredentials.getText()).toEqual(wrongMessage);
+    });
+
+    it('should not login user with wrong user name', async () =>{
+        await browser.url('/login');
+        const headline = $('h1');
+        await expect (await headline.getText()).toEqual('Login');
+        const customerUserNameField = await $('input[id="userName"]');
+        await customerUserNameField.setValue('jajin');
+
+        const customerPasswordField = $('input[id="password"]');
+        await customerPasswordField.setValue(customerPassword);
+        const loginButton = $('#login');
+        await expect (loginButton).toBeClickable();
+        (await loginButton).click();
+
+        await browser.pause(1000)
+
+        const wrongCredentials = $('#name');
+        await expect (await wrongCredentials.getText()).toEqual(wrongMessage);
+
+    });
 
     it('should login user with valid Credentials', async () =>{
         await browser.url('/login')
@@ -98,12 +138,17 @@ describe('Demoqa Login Page', async () => {
         
         // succesfully logged user check
         
-        // await expect (await headline.getText()).toEqual('Profile');
+        // await expect (await headline.getText()).toEqual('Profile');  page has been changed, Profile headline is not avalaible anymore
 
         const currentLoggedUser = $('#userName-value')  ;
         await expect (await currentLoggedUser.getText()).toEqual(loggedUser)
+    });
 
-        // logout    
+    it('should logout logged user', async ()=>{
+        //loggged from previous test
+        //logout
+        await browser.url('/books')
+
         const logoutButton = await $('#submit');
         await expect (logoutButton).toBeClickable();
         await logoutButton.click();
