@@ -1,5 +1,6 @@
 import { $ } from '@wdio/globals'
 import Page from './page.js';
+import {customerFirstName, customerLastName, customerUserName, customerPassword, loggedUser, wrongMessage} from '../../test/specs/fixtures.js'
 
 /**
  * sub page containing specific selectors and methods for a specific page
@@ -9,7 +10,7 @@ class LoginPage extends Page {
      * define selectors using getter methods
      */
     get inputUsername () {
-        return $('#username');
+        return $('#userName');
     }
 
     get inputPassword () {
@@ -19,18 +20,34 @@ class LoginPage extends Page {
     get btnSubmit () {
         return $('button[type="submit"]');
     }
-    get headline (){ 
+    get loginButton () {
+        return $('#login');
+    }
+
+    get headline () { 
         return $('h1')};
 
     
+    get logoutButton () {
+        return $('#submit')};
+
+ 
     /**
      * a method to encapsule automation code to interact with the page
      * e.g. to login using username and password
      */
-    async login (username, password) {
-        await this.inputUsername.setValue(username);
-        await this.inputPassword.setValue(password);
-        await this.btnSubmit.click();
+    async login () {
+        await browser.url('/login')
+        await this.inputUsername.setValue(customerUserName);
+        await this.inputPassword.setValue(customerPassword);
+
+        await (await this.loginButton).waitForClickable();
+        await this.loginButton.click();
+    }
+
+    async logout () {
+        await ((await this.logoutButton).waitForClickable());
+        await this.logoutButton.click();
     }
 
     /**

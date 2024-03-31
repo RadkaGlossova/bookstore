@@ -2,6 +2,7 @@ import { expect } from '@wdio/globals'
 import LoginPage from '../pageobjects/login.page.js'
 import SecurePage from '../pageobjects/secure.page.js'
 import {customerFirstName, customerLastName, customerUserName, customerPassword, loggedUser, wrongMessage} from '../../test/specs/fixtures.js'
+import loginPage from '../pageobjects/login.page.js'
 
 
 describe('Demoqa Login Page', async () => {
@@ -57,7 +58,7 @@ describe('Demoqa Login Page', async () => {
 
     it('should redirect to login', async () => {
         await browser.url('/register');
-         const headline = $('h1');
+        const headline = $('h1');
         await expect (await headline.getText()).toEqual('Register');
         const redirButton = $('#gotologin');
         await expect(redirButton).toBeClickable();
@@ -77,10 +78,11 @@ describe('Demoqa Login Page', async () => {
         await expect(await headline.getText()).toEqual('Register');
     });
 
-    it('should not login user with wrong password', async () => {
+    it ('should not login user with wrong password', async () => {
         await browser.url('/login');
         const headline = $('h1');
         await expect (await headline.getText()).toEqual('Login');
+        
         const customerUserNameField = await $('input[id="userName"]');
         await customerUserNameField.setValue(customerFirstName);
 
@@ -121,18 +123,7 @@ describe('Demoqa Login Page', async () => {
         await browser.url('/login')
         await browser.saveScreenshot('login_page.png');
 
-        const title = await $('h1');
-        await expect (await title.getText()).toContain('Login');
-        const customerUserNameField =  await $('input[id="userName"]');
-
-        await customerUserNameField.setValue(customerUserName);
-
-        const customerPasswordField = await $('input[id="password"]');
-        await customerPasswordField.setValue(customerPassword);
-
-        const loginButton = await $('#login');
-        await expect (loginButton).toBeClickable();
-        await loginButton.click()     
+        await loginPage.login();
 
         await browser.pause(1000) //poor internet connection
         
@@ -142,18 +133,26 @@ describe('Demoqa Login Page', async () => {
 
         const currentLoggedUser = $('#userName-value')  ;
         await expect (await currentLoggedUser.getText()).toEqual(loggedUser)
+   
     });
 
-    it('should logout logged user', async ()=>{
+    it ('should logout logged user', async ()=>{
         //loggged from previous test
-        //logout
-        await browser.url('/books')
+         await browser.url('/books')
+         await browser.saveScreenshot('login_page.png');
 
+         await browser.pause(1000) //poor internet connection
+        //await loginPage.login();
+
+        //logout
+       
+        await loginPage.logout();
+/*
         const logoutButton = await $('#submit');
         await expect (logoutButton).toBeClickable();
         await logoutButton.click();
-
-            const headline = await $('h1');
+*/
+        const headline = await $('h1');
         await expect (await headline.getText()).toEqual('Login');
 
 
